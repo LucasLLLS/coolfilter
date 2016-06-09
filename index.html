@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Cool Filter</title>
+</head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<style>
+	#img-edit img{
+	  padding-top: 20px;
+	  padding-bottom: 20px;
+	}
+
+	label{
+	  width: 50%;
+	  text-align:center;
+	  line-height: 40px;
+	  padding: 10px;
+	  margin: 10px;
+	  background: #f1f1f1;
+	  transition: all ease 0.5s;
+	  border-radius: 5px;
+	  border: 1px solid #e1e1e1;
+	  box-shadow: 1px 1px 2px #aaa;
+	}
+
+	label:hover{
+	  background: #fff;
+	}
+</style>
+
+<body>
+
+	<div ng-app="coolFilter" ng-controller="filterCtrl">
+ 
+	  
+	  <div class="col-sm-6" id="controls-box">
+	    
+	    <label ng-repeat="controle in controles">
+	        {{ controle.nome }}
+	        <input type="range" min="0" max="200" value='{{ controle.valorpadrao }}' data-filter='{{ controle.nome | lowercase }}' />
+	     </label>
+
+	</div>
+
+	<div class="col-sm-6" id="img-edit">
+	  <img src="https://pixabay.com/static/uploads/photo/2015/09/18/11/37/rustic-945421_960_720.jpg" class="img-responsive" alt="" />
+	</div>
+
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
+
+	<script>
+	angular.module('coolFilter',[])
+	.controller('filterCtrl', ['$scope', filterCtrl]);
+
+	function filterCtrl($scope){
+	  $scope.controles = [
+	    {nome: 'Brightness', valorpadrao: 100},
+	    {nome: 'Contrast', valorpadrao: 100},
+	    {nome: 'Grayscale', valorpadrao: 0},
+	    {nome: 'Invert', valorpadrao: 0},
+	    {nome: 'Saturate', valorpadrao: 100}
+	  ];
+	  
+	  $scope.incluir = inclui;
+	  
+	  function inclui(filtro){
+	    $scope.controles.push(filtro);
+	  }
+	}
+
+	$(document).ready(function(){
+	  
+	    $('input').on("change", function(){
+	    
+	    var filtros = [];
+	    var i = 0;
+	    $('input').each(function(){
+	     filtros[i] = {valor: $(this).val(), nome: $(this).attr('data-filter')};
+	     i++;
+	    });
+	    
+	    var estilo = "";
+	    for(i=0; i< filtros.length; i++){
+	      estilo = estilo + filtros[i].nome + '(' + filtros[i].valor + '%) ';
+	    }
+	      
+	    $("#img-edit img").css({'-webkit-filter': estilo, 'filter':estilo});
+
+	  });
+	  
+	});
+	</script>
+
+	
+</body>
+</html>
